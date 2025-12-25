@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;500;700&family=Mountains+of+Christmas:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-red: #ff2e2e;
+            --primary-green: #2ecc71;
+            --gold: #f1c40f;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+        body {
+            font-family: 'Mali', cursive;
+            background: #000;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Aurora Background --- */
+        .bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a192f 0%, #000 100%);
+            z-index: -2;
+        }
+        .aurora {
+            position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+            background: radial-gradient(circle at 50% 50%, rgba(20, 107, 58, 0.15) 0%, transparent 50%);
+            filter: blur(60px); animation: moveAurora 20s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes moveAurora {
+            from { transform: translate(-10%, -10%) rotate(0deg); }
+            to { transform: translate(10%, 10%) rotate(10deg); }
+        }
+
+        /* --- Custom Cursor Sparkle --- */
+        .sparkle {
+            position: fixed; width: 6px; height: 6px; background: var(--gold);
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            box-shadow: 0 0 10px var(--gold);
+        }
+
+        /* --- Tree Background --- */
+        .decoration-bg {
+            position: absolute; bottom: -20px; width: 100%; text-align: center;
+            font-size: 25rem; opacity: 0.1; z-index: 0; filter: blur(5px);
+            user-select: none; transition: transform 0.5s ease-out;
+        }
+
+        /* --- Intro Screen --- */
+        #intro-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        .start-btn {
+            padding: 20px 50px; font-size: 2rem;
+            background: linear-gradient(45deg, var(--primary-red), #ff7675);
+            color: white; border: none; border-radius: 50px; cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 46, 46, 0.6);
+            font-family: 'Mountains of Christmas', cursive; font-weight: 700;
+            transition: 0.3s; animation: pulse 2s infinite;
+        }
+        .start-btn:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(255, 46, 46, 0.8); }
+
+        /* --- Main Card Container --- */
+        .container {
+            position: relative; z-index: 10;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px; padding: 50px;
+            text-align: center; max-width: 90%; width: 550px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            opacity: 0; transform: scale(0.8) translateY(50px);
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .container.show { opacity: 1; transform: scale(1) translateY(0); }
+
+        h1 {
+            font-family: 'Mountains of Christmas', cursive; font-size: 4.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to bottom, #fff 20%, var(--gold) 50%, #fff 80%);
+            -webkit-background-clip: text; color: transparent;
+            filter: drop-shadow(0 0 15px rgba(241, 196, 15, 0.5));
+        }
+
+        .subtitle { font-size: 1.4rem; margin-bottom: 30px; letter-spacing: 2px; }
+
+        /* --- Gift Box --- */
+        .gift-wrapper {
+            position: relative; height: 150px; display: flex;
+            justify-content: center; align-items: center; margin-bottom: 20px;
+        }
+        .gift-box {
+            font-size: 6rem; color: var(--primary-red); cursor: pointer;
+            filter: drop-shadow(0 0 20px rgba(255, 46, 46, 0.5));
+            animation: bounce 2s infinite ease-in-out; transition: 0.5s;
+        }
+        .gift-box:hover { transform: scale(1.2) rotate(10deg); }
+
+        /* --- Surprise Content --- */
+        .hidden-content { display: none; opacity: 0; }
+        .photo-frame {
+            width: 250px; height: 250px; margin: 0 auto 25px;
+            border-radius: 50%; padding: 10px;
+            background: linear-gradient(45deg, var(--gold), #fff, var(--primary-green));
+            box-shadow: 0 0 30px rgba(241, 196, 15, 0.4);
+            animation: glow 3s infinite alternate;
+        }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 5px solid #000; }
+
+        .message-card {
+            background: rgba(0, 0, 0, 0.4); padding: 25px;
+            border-radius: 20px; font-size: 1.25rem; line-height: 1.8;
+            border-left: 5px solid var(--primary-red);
+        }
+
+        /* --- Floating Floating Items --- */
+        .float-item {
+            position: absolute; pointer-events: none; z-index: 1;
+            opacity: 0.6; animation: floatAnim 10s infinite linear;
+        }
+
+        /* --- Animations --- */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 46, 46, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 46, 46, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 46, 46, 0); }
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(241, 196, 15, 0.4); }
+            to { box-shadow: 0 0 40px rgba(241, 196, 15, 0.8); }
+        }
+        @keyframes floatAnim {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        #youtube-player-container { position: absolute; top: -999px; }
+        .music-control {
+            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
+            background: rgba(255,255,255,0.2); width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid white; backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-container">
+        <div class="aurora"></div>
+    </div>
+    <div class="decoration-bg" id="parallax-tree">🎄</div>
+    <canvas id="snow-canvas" style="position:fixed; top:0; left:0; pointer-events:none; z-index:2;"></canvas>
+
+    <div id="intro-screen">
+        <h2 style="font-family:'Mountains of Christmas'; font-size: 3rem; margin-bottom: 20px; color: var(--gold);">You've got a gift!</h2>
+        <button class="start-btn" onclick="startExperience()">OPEN PRESENT 🎁</button>
+        <p style="margin-top: 20px; color: #aaa;">เปิดเสียงเพื่อรับบรรยากาศด้วยนะเบบี๋</p>
+    </div>
+
+    <div class="container" id="main-card">
+        <h1>Merry Christmas</h1>
+        <p class="subtitle">To: น้ำฝน เบบี๋ของเค้า ❤️</p>
+
+        <div class="gift-wrapper" id="gift-section">
+            <i class="fas fa-gift gift-box" onclick="openGift()"></i>
+        </div>
+
+        <div class="hidden-content" id="surprise">
+            <div class="photo-frame">
+                <img src=n.jpg alt="Memory">
+            </div>
+            <div class="message-card">
+                <p id="typing-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="youtube-player-container"><div id="player"></div></div>
+    <div class="music-control" onclick="toggleMusic()">
+        <i class="fas fa-music" id="music-icon"></i>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- CONFIG ---
+        const youtubeVideoID = "3CWJNqyub3o"; // เปลี่ยน ID เพลงตรงนี้
+        const message = "สุขสันต์วันคริสต์มาสนะค้าบบเบบี๋ของเค้า ✨ ขอให้ปีนี้และปีต่อๆ ไปเรามีกันแบบนี้ตลอดไปน้าาา ขอบคุณที่เข้ามาเป็นเรื่องราวดีๆ ในชีวิตเค้า รักที่สุดเลย! 🎄❤️🎁";
+        
+        let player;
+        let isMusicPlaying = false;
+
+        // --- Sparkle Effect ---
+        document.addEventListener('mousemove', (e) => {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = e.clientX + 'px';
+            sparkle.style.top = e.clientY + 'px';
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                sparkle.style.transform = `scale(0) translateY(20px)`;
+                sparkle.style.opacity = '0';
+            }, 100);
+            setTimeout(() => sparkle.remove(), 800);
+
+            // Parallax Tree
+            const moveX = (window.innerWidth / 2 - e.clientX) * 0.05;
+            document.getElementById('parallax-tree').style.transform = `translateX(${moveX}px)`;
+        });
+
+        // --- YouTube API ---
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0', width: '0', videoId: youtubeVideoID,
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': youtubeVideoID },
+                events: { 'onReady': () => console.log("Music Ready") }
+            });
+        }
+
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        function startExperience() {
+            document.getElementById('intro-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('main-card').classList.add('show');
+                if(player) { player.playVideo(); isMusicPlaying = true; }
+                createFloatingItems();
+            }, 800);
+        }
+
+        function toggleMusic() {
+            const icon = document.getElementById('music-icon');
+            if (isMusicPlaying) {
+                player.pauseVideo();
+                icon.className = 'fas fa-volume-mute';
+            } else {
+                player.playVideo();
+                icon.className = 'fas fa-music';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // --- Open Gift Logic ---
+        function openGift() {
+            const giftSection = document.getElementById('gift-section');
+            const surprise = document.getElementById('surprise');
+            
+            // อลังการพลุ
+            const duration = 5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti({...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }});
+                confetti({...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }});
+            }, 250);
+
+            giftSection.style.display = 'none';
+            surprise.style.display = 'block';
+            setTimeout(() => {
+                surprise.style.opacity = '1';
+                typeWriter();
+            }, 100);
+        }
+
+        let charIndex = 0;
+        function typeWriter() {
+            if (charIndex < message.length) {
+                document.getElementById("typing-text").innerHTML += message.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 70);
+            }
+        }
+
+        // --- Snow & Floating Items ---
+        function createFloatingItems() {
+            const icons = ['❄️', '⭐', '🎁', '🍭', '🧦'];
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'float-item';
+                    item.innerHTML = icons[Math.floor(Math.random()*icons.length)];
+                    item.style.left = Math.random() * 100 + 'vw';
+                    item.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                    item.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    document.body.appendChild(item);
+                }, i * 300);
+            }
+        }
+
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let snowflakes = [];
+
+        function initSnow() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            snowflakes = [];
+            for(let i=0; i<150; i++) {
+                snowflakes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 3 + 1,
+                    d: Math.random() * 1
+                });
+            }
+        }
+
+        function drawSnow() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            for(let i=0; i<snowflakes.length; i++) {
+                let f = snowflakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI*2, true);
+            }
+            ctx.fill();
+            moveSnow();
+        }
+
+        function moveSnow() {
+            for(let i=0; i<snowflakes.length; i++) {
+                let f = snowflakes[i];
+                f.y += Math.pow(f.d, 2) + 1;
+                f.x += Math.sin(f.y/30);
+                if(f.y > canvas.height) {
+                    snowflakes[i] = {x: Math.random()*canvas.width, y: 0, r: f.r, d: f.d};
+                }
+            }
+        }
+
+        initSnow();
+        setInterval(drawSnow, 30);
+        window.addEventListener('resize', initSnow);
+
+    </script>
+</body>
+</html>
